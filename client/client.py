@@ -1,26 +1,38 @@
 import socket
 from MySocket import MySocket
+import time
+import threading
 
 
-HOST, PORT = "127.0.0.1", 3001
 
-client=MySocket()
+HOST, PORT = "127.0.0.1", 3002
 
-data="Hello, World!"
-try:
-    
+#client=MySocket()
+
+semaphore=threading.Semaphore(1)
+
+def client_thread():
+
+    client=MySocket()
     client.connect((HOST, PORT))
-    data_recv=client.myreceive()
-    print("Received: {}".format(data_recv.strip()))
-    
-    #client.myreceive = str((1024), "utf-8")
-    
-    client.mysend(data.encode('utf-8'))
-    #client.mysend(bytes(data + "\n", "utf-8"))
+    data="Hello, World!"
+    while True:
+        try:
+            semaphore.acquire()
+            data_recv=client.myreceive()
+            print("Received: {}".format(data_recv.strip()))
+        
+            #client.myreceive = str((1024), "utf-8")
+        
+            client.mysend(data.encode('utf-8'))
+            #client.mysend(bytes(data + "\n", "utf-8"))
+            time.sleep(1)
+        
+        finally:
+            print("Sent:     {}".format(data))
+            semaphore.release()
 
-    
-finally:
-   print("Sent:     {}".format(data))
+client_thread()
 
 
 

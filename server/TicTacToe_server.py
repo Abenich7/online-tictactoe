@@ -4,10 +4,13 @@ from MySocket import MySocket
 from ClientThread import ClientThread
 from DataStack import DataStack
 import threading
+import time
+import csv
 
 MAIN_ADDRESS = '127.0.0.1'
 MAIN_PORT = 3000
 
+counter =0
 #def handle_client(client_socket, data_stack, address):
  #   """Handle individual client in a thread"""
   #  try:
@@ -18,15 +21,41 @@ MAIN_PORT = 3000
     #finally:
      #   client_socket.close()
 
-def client_thread_communication(client_socket):
-    #while True:
-        data=[1,2,3,4,5]
+
+
+def client_thread_communication(client_socket,child_socket):
+    while True:
+        
+        # Load data from CSV file
+        with open('data.csv', mode='r') as file:
+            reader = csv.reader(file)
+            data = list(reader)
+        
+        # Modify the data (example: append a new row with row number)
+        new_row_number = len(data) + 1
+        data.append([new_row_number, 'new', 'data', 'row'])
+        
+        # Save the modified data back to the CSV file
+        with open('data.csv', mode='w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(data)
+       
         data_str=str(data)
         print(data_str)
         client_socket.mysend(data_str.encode('utf-8'))
         #client_socket.mysend(bytes(available_ports + "\n", "utf-8"))
         data_recv=client_socket.myreceive()
         print("Received: {}".format(data_recv.decode("utf-8")).strip())
+        print('hello')
+        time.sleep(1)
+        #client_socket.close()
+        #wait for new client to connect to running thread
+
+        #client_socket_temp, address = child_socket.myaccept()
+        #client_socket = MySocket(sock=client_socket_temp)
+        #client_socket.listen(5)
+        #client_socket.accept()
+
         #client_socket.myreceive = str((1024), "utf-8")
         # client_socket.send(str(available_ports).encode())
             
@@ -52,12 +81,14 @@ def child_server(port):
         threads = []
         while True:
             try:
+                #accept socket connection from client
                 client_socket_temp, address = child_socket.myaccept()
                 client_socket = MySocket(sock=client_socket_temp)
                 print(f"[*] Child server on port {port} accepted connection from {address}")
-                
-                client_thread=threading.Thread(group=None,target=client_thread_communication,args=[client_socket])
+                #dispatch a new thread to handle the client
+                client_thread=threading.Thread(group=None,target=client_thread_communication,args=[client_socket,child_socket])
                 client_thread.start()
+                client_thread.join()
 
                 #handle_client(client_socket, data_stack, address)
                 #client_thread.start()
