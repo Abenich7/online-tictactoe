@@ -3,18 +3,35 @@ import multiprocessing
 from MySocket import MySocket
 from ClientThread import ClientThread
 from DataStack import DataStack
+import threading
 
 MAIN_ADDRESS = '127.0.0.1'
 MAIN_PORT = 3000
 
-def handle_client(client_socket, data_stack, address):
-    """Handle individual client in a thread"""
-    try:
-        client_thread = ClientThread(client_socket, data_stack)
-        client_thread.start()
-        client_thread.join()
-    finally:
-        client_socket.close()
+#def handle_client(client_socket, data_stack, address):
+ #   """Handle individual client in a thread"""
+  #  try:
+   #     client_thread = ClientThread()
+       #client_thread.run(client_socket)
+    #    client_thread.start()
+     #   client_thread.join()
+    #finally:
+     #   client_socket.close()
+
+def client_thread_communication(client_socket):
+    #while True:
+        data=[1,2,3,4,5]
+        data_str=str(data)
+        print(data_str)
+        client_socket.mysend(data_str.encode('utf-8'))
+        #client_socket.mysend(bytes(available_ports + "\n", "utf-8"))
+        data_recv=client_socket.myreceive()
+        print("Received: {}".format(data_recv.decode("utf-8")).strip())
+        #client_socket.myreceive = str((1024), "utf-8")
+        # client_socket.send(str(available_ports).encode())
+            
+      #  client_socket.close()
+    
 
 def child_server(port):
     """
@@ -35,15 +52,16 @@ def child_server(port):
         threads = []
         while True:
             try:
-                client_socket, address = child_socket.myaccept()
+                client_socket_temp, address = child_socket.myaccept()
+                client_socket = MySocket(sock=client_socket_temp)
                 print(f"[*] Child server on port {port} accepted connection from {address}")
                 
-                # Create new thread for this client
-                client_thread = multiprocessing.Process(
-                    target=handle_client,
-                    args=(client_socket, data_stack, address)
-                )
+                client_thread=threading.Thread(group=None,target=client_thread_communication,args=[client_socket])
                 client_thread.start()
+
+                #handle_client(client_socket, data_stack, address)
+                #client_thread.start()
+               
                 threads.append(client_thread)
                 
                 # Clean up completed threads

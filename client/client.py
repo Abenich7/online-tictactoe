@@ -2,24 +2,25 @@ import socket
 from MySocket import MySocket
 
 
-HOST, PORT = "127.0.0.1", 3000
+HOST, PORT = "127.0.0.1", 3001
 
 client=MySocket()
 
 data="Hello, World!"
 try:
+    
     client.connect((HOST, PORT))
     data_recv=client.myreceive()
     print("Received: {}".format(data_recv.strip()))
     
     #client.myreceive = str((1024), "utf-8")
+    
     client.mysend(data.encode('utf-8'))
     #client.mysend(bytes(data + "\n", "utf-8"))
 
-    print("Sent:     {}".format(data))
-    print("Received: {}".format(client.myreceive))
+    
 finally:
-    client.close()
+   print("Sent:     {}".format(data))
 
 
 

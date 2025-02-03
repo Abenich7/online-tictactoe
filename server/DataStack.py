@@ -2,7 +2,7 @@ import threading
 
 class DataStack():
     def __init__(self):
-        self.data = []
+        self.stack = []
         self.lock = threading.Lock()
 
     def push(self, item):

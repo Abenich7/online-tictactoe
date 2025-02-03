@@ -1,16 +1,19 @@
 import threading
 
 class ClientThread(threading.Thread):
-    def __init__(self, clientsocket):
+    def __init__(self):
         threading.Thread.__init__(self)
-        self.clientsocket = clientsocket
+       # self.clientsocket = clientsocket
+       # self.datastack = datastack
 
-    def run(self):
+#overriding the run() method in the ClientThread subclass of class Thread
+    def run(self,clientsocket):
           # Handle client connection
+        
         while True:
-            data = self.clientsocket.recv(2048)
+            data = clientsocket.myreceive(2048)
             if not data:
                 break
             print(f"Received: {data}")
-            self.clientsocket.send(data.upper())
-        self.clientsocket.close()
+            clientsocket.mysend(data.upper())
+        clientsocket.close()
