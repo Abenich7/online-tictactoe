@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
-
+import csv
 
 
 # Initialize game state
@@ -44,6 +44,13 @@ def winning_move(player):
 
     return False
 
+
+# Function to save the current board state to data.csv
+def save_board_to_csv():
+    with open('data.csv', mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerows(board)
+
 # Function to handle mouse clicks
 def on_click(event):
     global current_player, game_over
@@ -64,6 +71,8 @@ def on_click(event):
 
         current_player = "O" if current_player == "X" else "X"
 
+    save_board_to_csv()
+    
 # Function to reset the game
 def reset_game():
     global board, current_player, game_over

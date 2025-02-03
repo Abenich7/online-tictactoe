@@ -1,8 +1,8 @@
 import socket
 import multiprocessing
 from MySocket import MySocket
-from ClientThread import ClientThread
-from DataStack import DataStack
+#from ClientThread import ClientThread
+#from DataStack import DataStack
 import threading
 import time
 import csv
@@ -10,7 +10,7 @@ import csv
 MAIN_ADDRESS = '127.0.0.1'
 MAIN_PORT = 3000
 
-counter =0
+#counter =0
 #def handle_client(client_socket, data_stack, address):
  #   """Handle individual client in a thread"""
   #  try:
@@ -21,30 +21,18 @@ counter =0
     #finally:
      #   client_socket.close()
 
-
+data_str="hello"
 
 def client_thread_communication(client_socket,child_socket):
     while True:
-        
-        # Load data from CSV file
-        with open('data.csv', mode='r') as file:
-            reader = csv.reader(file)
-            data = list(reader)
-        
-        # Modify the data (example: append a new row with row number)
-        new_row_number = len(data) + 1
-        data.append([new_row_number, 'new', 'data', 'row'])
-        
-        # Save the modified data back to the CSV file
-        with open('data.csv', mode='w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerows(data)
        
-        data_str=str(data)
-        print(data_str)
+       
+       # data_str=str(data)
+        #print(data_str)
         client_socket.mysend(data_str.encode('utf-8'))
         #client_socket.mysend(bytes(available_ports + "\n", "utf-8"))
         data_recv=client_socket.myreceive()
+        
         print("Received: {}".format(data_recv.decode("utf-8")).strip())
         print('hello')
         time.sleep(1)
@@ -74,7 +62,7 @@ def child_server(port):
         child_socket.listen(5)  # Allow multiple pending connections
         
         # Shared DataStack for all clients connecting to this child server
-        data_stack = DataStack()
+       # data_stack = DataStack()
         
         print(f"[*] Child server started on port {port}")
         

@@ -1,7 +1,8 @@
 import socket
 from MySocket import MySocket
 import time
-import threading
+import csv
+#import threading
 
 
 
@@ -9,28 +10,37 @@ HOST, PORT = "127.0.0.1", 3002
 
 #client=MySocket()
 
-semaphore=threading.Semaphore(1)
+#semaphore=threading.Semaphore(1)
 
 def client_thread():
 
     client=MySocket()
     client.connect((HOST, PORT))
-    data="Hello, World!"
+    
     while True:
         try:
-            semaphore.acquire()
+            
+
+            #semaphore.acquire()
             data_recv=client.myreceive()
             print("Received: {}".format(data_recv.strip()))
         
             #client.myreceive = str((1024), "utf-8")
         
+
+            # Read data from data.csv
+            with open('data.csv', mode='r') as file:
+                reader = csv.reader(file)
+                data = list(reader)
+            
+            data = str(data)
             client.mysend(data.encode('utf-8'))
             #client.mysend(bytes(data + "\n", "utf-8"))
             time.sleep(1)
         
         finally:
             print("Sent:     {}".format(data))
-            semaphore.release()
+           # semaphore.release()
 
 client_thread()
 
