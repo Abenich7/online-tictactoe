@@ -2,7 +2,7 @@ import socket
 from MySocket import MySocket
 import time
 import csv
-import threading
+#import threading
 
 
 
@@ -17,15 +17,13 @@ def client_thread():
     client=MySocket()
     client.connect((HOST, PORT))
     
-    #while True:
-    try:
-
-
-            data_recv=threading.Thread(target=client.myreceive).start()
+    while True:
+        try:
+            
 
             #semaphore.acquire()
-            #data_recv=client.myreceive()
-            #print("Received: {}".format(data_recv.strip()))
+            data_recv=client.myreceive()
+            print("Received: {}".format(data_recv.strip()))
         
             #client.myreceive = str((1024), "utf-8")
         
@@ -40,12 +38,11 @@ def client_thread():
             #client.mysend(bytes(data + "\n", "utf-8"))
             time.sleep(1)
         
-    finally:
+        finally:
             print("Sent:     {}".format(data))
            # semaphore.release()
 
-if __name__ == "__main__":  
-    client_thread()
+client_thread()
 
 
 
@@ -57,6 +54,22 @@ if __name__ == "__main__":
 
 
 #setup functions to handle client functionality
+def send_data(data):
+    
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        sock.connect((HOST, PORT))
+        sock.sendall(bytes(data + "\n", "utf-8"))
+        received = str(sock.recv(1024), "utf-8")
+        #save data to file
+        with open("received_data.csv", "w") as f:
+            f.write(received)
+        
+    finally:
+        sock.close()
+    print("Sent:     {}".format(data))
+    print("Received: {}".format(received))
+
 
 
 

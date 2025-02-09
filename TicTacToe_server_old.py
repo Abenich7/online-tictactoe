@@ -1,12 +1,13 @@
 import socket
 import multiprocessing
-from MySocket import MySocket
+
 #from ClientThread import ClientThread
 #from DataStack import DataStack
 import threading
 import time
 import csv
 from Server1 import MySocket 
+
 
 MAIN_ADDRESS = '127.0.0.1'
 MAIN_PORT = 3000
@@ -50,15 +51,15 @@ def client_thread_communication(client_socket):
       #  client_socket.close()
     
 
-def child_server(port):
-    """
-    Run a child server process that can accept multiple clients.
-    Each client is handled in its own thread.
-    """
-    try:
+#def child_server(port):
+  #  """
+   # Run a child server process that can accept multiple clients.
+    #Each client is handled in its own thread.
+    #"""
+ #   try:
         # Create server socket for this child process
         #child sockets are made to accept connections from clients
-        child_socket = MySocket(port)
+     #   child_socket = MySocket(port)
         
         #child_socket.listen(5)  # Allow multiple pending connections
         
@@ -108,8 +109,8 @@ def child_server(port):
             #except Exception as e:
              #   print(f"[!] Error accepting client in child server: {e}")
                 
-    except Exception as e:
-        print(f"[!] Error in child server: {e}")
+    #except Exception as e:
+     #   print(f"[!] Error in child server: {e}")
    # finally:
     #    child_socket.close()
 
@@ -125,7 +126,7 @@ def main():
         for i in range(num_child_servers):
             port = start_port + i
             process = multiprocessing.Process(
-                target=child_server,
+                target=MySocket,
                 args=(port,)
             )
             process.start()
@@ -133,11 +134,11 @@ def main():
             print(f"[*] Started child server process on port {port}")
         
         # Main server to provide information about available child servers
-        main_socket = MySocket()
-        main_socket.bind((MAIN_ADDRESS, MAIN_PORT))
-        main_socket.listen(1)
+        main_socket = MySocket(MAIN_PORT)
+        #main_socket.bind((MAIN_ADDRESS, MAIN_PORT))
+        #main_socket.listen(1)
         
-        print(f"[*] Main server listening on {MAIN_ADDRESS}:{MAIN_PORT}")
+        #print(f"[*] Main server listening on {MAIN_ADDRESS}:{MAIN_PORT}")
         
         while True:
             try:
