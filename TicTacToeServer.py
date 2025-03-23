@@ -170,7 +170,8 @@ class TicTacToeServer:
         for _, client in room.players:
             client.send("reset".encode('utf-8'))
 
-    def handle_disconnect(self, player_name, port):
+    def handle_disconnect(self,
+                         player_name, port):
         room = self.game_rooms[port]
         room.game_active = False
         remaining_players = [p for p in room.players if p[0] != player_name]

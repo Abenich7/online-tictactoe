@@ -149,8 +149,8 @@ class TicTacToeClient:
                 counter +=1
                 if counter==15:
                     
-                    retry_button = tk.Button(self.root, text="Try Another Game Room", command=self.retry_connection)
-                    retry_button.pack()
+                    self.retry_button = tk.Button(self.root, text="Try Another Game Room", command=self.retry_connection)
+                    self.retry_button.pack()
                     return
                 data = self.sock.recv(1024).decode('utf-8')
 
